@@ -26,7 +26,7 @@ clear_step() {
 
 # STEP 1: NETWORK
 
-if true || ! (ping -c1 archlinux.org &>/dev/null); then
+if ! (ping -c1 archlinux.org &>/dev/null); then
   step "Detecting Wi-Fi networks..." slice
 
   # Get list of interfaces managed by iwd
@@ -87,6 +87,9 @@ user_form() {
     fi
   done
 
+  # Hash the password using yescrypt
+  password_hash=$(openssl passwd -6 "$password")
+
   full_name=$(gum input --placeholder "Used for git authentication (hit return to skip)" --prompt.foreground="#845DF9" --prompt "Full name> ")
   email_address=$(gum input --placeholder "Used for git authentication (hit return to skip)" --prompt.foreground="#845DF9" --prompt "Email address> ")
 
@@ -145,7 +148,7 @@ clear
 cat <<EOJ
 {
   "user_name": "$user_name",
-  "password": "$password",
+  "password_hash": "$password_hash",
   "full_name": "$full_name",
   "email_address": "$email_address",
   "timezone": "$timezone",
