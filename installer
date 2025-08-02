@@ -105,7 +105,11 @@ user_form() {
   done
 
   timezone=$(timedatectl list-timezones | gum choose --height 1 --selected=$(tzupdate -p) --header "Timezone") || abort
-  locale=$(sed 's/ .*//' /usr/share/i18n/SUPPORTED | gum choose --height 1 --selected=en_US.UTF-8 --header "Locale") || abort
+  locale_full=$(sed 's/ .*//' /usr/share/i18n/SUPPORTED | gum choose --height 1 --selected=en_US.UTF-8 --header "Locale") || abort
+  
+  # Split locale into separate variables
+  locale=$(echo "$locale_full" | cut -d'.' -f1)
+  encoding=$(echo "$locale_full" | cut -d'.' -f2)
 }
 
 user_form
@@ -269,7 +273,7 @@ cat <<- _EOF_ | tee user_configuration.json
     ],
     "locale_config": {
         "kb_layout": "$locale",
-        "sys_enc": "UTF-8",
+        "sys_enc": "$encoding",
         "sys_lang": "en_US.UTF-8"
     },
     "mirror_config": {
