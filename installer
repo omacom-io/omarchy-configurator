@@ -145,14 +145,192 @@ done
 
 clear
 
-cat <<EOJ
+cat <<- _EOF_ | tee user_credentials.json
 {
-  "user_name": "$user_name",
-  "password_hash": "$password_hash",
-  "full_name": "$full_name",
-  "email_address": "$email_address",
-  "timezone": "$timezone",
-  "locale": "$locale",
-  "disk": "$disk"
+    "encryption_password": "$password",
+    "users": [
+        {
+            "enc_password": "$password_hash",
+            "groups": [],
+            "sudo": true,
+            "username": "$user_name"
+        }
+    ]
 }
-EOJ
+_EOF_
+
+cat <<- _EOF_ | tee user_configuration.json
+{
+    "app_config": null,
+    "archinstall-language": "English",
+    "auth_config": {},
+    "bootloader": "Systemd-boot",
+    "custom_commands": [],
+    "disk_config": {
+        "btrfs_options": {
+            "snapshot_config": null
+        },
+        "config_type": "default_layout",
+        "device_modifications": [
+            {
+                "device": "$disk",
+                "partitions": [
+                    {
+                        "btrfs": [],
+                        "dev_path": null,
+                        "flags": [
+                            "boot",
+                            "esp"
+                        ],
+                        "fs_type": "fat32",
+                        "mount_options": [],
+                        "mountpoint": "/boot",
+                        "obj_id": "ea21d3f2-82bb-49cc-ab5d-6f81ae94e18d",
+                        "size": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "GiB",
+                            "value": 1
+                        },
+                        "start": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "MiB",
+                            "value": 1
+                        },
+                        "status": "create",
+                        "type": "primary"
+                    },
+                    {
+                        "btrfs": [
+                            {
+                                "mountpoint": "/",
+                                "name": "@"
+                            },
+                            {
+                                "mountpoint": "/home",
+                                "name": "@home"
+                            },
+                            {
+                                "mountpoint": "/var/log",
+                                "name": "@log"
+                            },
+                            {
+                                "mountpoint": "/var/cache/pacman/pkg",
+                                "name": "@pkg"
+                            }
+                        ],
+                        "dev_path": null,
+                        "flags": [],
+                        "fs_type": "btrfs",
+                        "mount_options": [
+                            "nodatacow"
+                        ],
+                        "mountpoint": null,
+                        "obj_id": "8c2c2b92-1070-455d-b76a-56263bab24aa",
+                        "size": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "B",
+                            "value": 15030288384
+                        },
+                        "start": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "B",
+                            "value": 1074790400
+                        },
+                        "status": "create",
+                        "type": "primary"
+                    }
+                ],
+                "wipe": true
+            }
+        ],
+        "disk_encryption": {
+            "encryption_type": "luks",
+            "lvm_volumes": [],
+            "partitions": [
+                "8c2c2b92-1070-455d-b76a-56263bab24aa"
+            ]
+        }
+    },
+    "hostname": "archlinux",
+    "kernels": [
+        "linux"
+    ],
+    "locale_config": {
+        "kb_layout": "$locale",
+        "sys_enc": "UTF-8",
+        "sys_lang": "en_US.UTF-8"
+    },
+    "mirror_config": {
+        "custom_repositories": [],
+        "custom_servers": [],
+        "mirror_regions": {
+            "Sweden": [
+                "http://ftp.lysator.liu.se/pub/archlinux/\$repo/os/\$arch",
+                "https://ftp.lysator.liu.se/pub/archlinux/\$repo/os/\$arch",
+                "http://ftp.myrveln.se/pub/linux/archlinux/\$repo/os/\$arch",
+                "https://ftp.myrveln.se/pub/linux/archlinux/\$repo/os/\$arch",
+                "http://mirror.accum.se/mirror/archlinux/\$repo/os/\$arch",
+                "https://mirror.accum.se/mirror/archlinux/\$repo/os/\$arch",
+                "https://mirror.osbeck.com/archlinux/\$repo/os/\$arch",
+                "http://ftpmirror.infania.net/mirror/archlinux/\$repo/os/\$arch",
+                "http://mirror.tedwall.se/archlinux/\$repo/os/\$arch",
+                "https://mirror.tedwall.se/archlinux/\$repo/os/\$arch",
+                "http://ftp.ludd.ltu.se/mirrors/archlinux/\$repo/os/\$arch",
+                "https://ftp.ludd.ltu.se/mirrors/archlinux/\$repo/os/\$arch",
+                "http://mirror.bahnhof.net/pub/archlinux/\$repo/os/\$arch",
+                "https://mirror.bahnhof.net/pub/archlinux/\$repo/os/\$arch",
+                "https://mirror.braindrainlan.nu/archlinux/\$repo/os/\$arch"
+            ]
+        },
+        "optional_repositories": []
+    },
+    "network_config": {
+        "type": "iso"
+    },
+    "ntp": true,
+    "packages": [],
+    "parallel_downloads": 0,
+    "profile_config": {
+        "gfx_driver": "All open-source",
+        "greeter": "sddm",
+        "profile": {
+            "custom_settings": {
+                "Hyprland": {
+                    "seat_access": "polkit"
+                }
+            },
+            "details": [
+                "Hyprland"
+            ],
+            "main": "Desktop"
+        }
+    },
+    "script": null,
+    "services": [],
+    "swap": true,
+    "timezone": "$timezone",
+    "version": "3.0.9"
+}
+_EOF_
+
+# cat <<EOJ
+# {
+#   "user_name": "$user_name",
+#   "password_hash": "$password_hash",
+#   "full_name": "$full_name",
+#   "email_address": "$email_address",
+#   "disk": "$disk"
+# }
+# EOJ
