@@ -278,26 +278,8 @@ cat <<- _EOF_ | tee user_configuration.json
     },
     "mirror_config": {
         "custom_repositories": [],
-        "custom_servers": [],
-        "mirror_regions": {
-            "Sweden": [
-                "http://ftp.lysator.liu.se/pub/archlinux/\$repo/os/\$arch",
-                "https://ftp.lysator.liu.se/pub/archlinux/\$repo/os/\$arch",
-                "http://ftp.myrveln.se/pub/linux/archlinux/\$repo/os/\$arch",
-                "https://ftp.myrveln.se/pub/linux/archlinux/\$repo/os/\$arch",
-                "http://mirror.accum.se/mirror/archlinux/\$repo/os/\$arch",
-                "https://mirror.accum.se/mirror/archlinux/\$repo/os/\$arch",
-                "https://mirror.osbeck.com/archlinux/\$repo/os/\$arch",
-                "http://ftpmirror.infania.net/mirror/archlinux/\$repo/os/\$arch",
-                "http://mirror.tedwall.se/archlinux/\$repo/os/\$arch",
-                "https://mirror.tedwall.se/archlinux/\$repo/os/\$arch",
-                "http://ftp.ludd.ltu.se/mirrors/archlinux/\$repo/os/\$arch",
-                "https://ftp.ludd.ltu.se/mirrors/archlinux/\$repo/os/\$arch",
-                "http://mirror.bahnhof.net/pub/archlinux/\$repo/os/\$arch",
-                "https://mirror.bahnhof.net/pub/archlinux/\$repo/os/\$arch",
-                "https://mirror.braindrainlan.nu/archlinux/\$repo/os/\$arch"
-            ]
-        },
+        "custom_servers": [{"url": "https://geo.mirror.pkgbuild.com/"}],
+        "mirror_regions": {},
         "optional_repositories": []
     },
     "network_config": {
