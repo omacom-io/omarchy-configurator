@@ -110,7 +110,7 @@ user_form() {
 
   timezone=$(timedatectl list-timezones | gum choose --height 1 --selected=$(tzupdate -p) --header "Timezone") || abort
   locale_full=$(sed 's/ .*//' /usr/share/i18n/SUPPORTED | gum choose --height 1 --selected=en_US.UTF-8 --header "Locale") || abort
-  
+
   # Split locale into separate variables
   locale=$(echo "$locale_full" | cut -d'.' -f1)
   encoding=$(echo "$locale_full" | cut -d'.' -f2)
@@ -136,6 +136,10 @@ disk_form() {
 
   disk=$(lsblk -dpno NAME,SIZE,TYPE | grep -E '/dev/(sd|hd|vd|nvme|mmcblk)' | awk '{print $1, $2}' | gum choose --header "Select install disk") || abort
   disk=$(echo "$disk" | awk '{print $1}')
+
+  disk_size=$(lsblk -bdno SIZE "$disk")
+  # 2GiB boot + 1MiB Start Offset + 1MiB reserve for GPT backup
+  main_partition_size=$((disk_size - 2148532224 - 1048576))
 }
 
 disk_form
@@ -156,9 +160,10 @@ main_partition_size=$((disk_size - 2148532224))
 
 clear
 
-cat <<- _EOF_ | tee user_credentials.json
+cat <<-_EOF_ | tee user_credentials.json
 {
     "encryption_password": "$password",
+    "root_enc_password": "$password_hash",
     "users": [
         {
             "enc_password": "$password_hash",
@@ -170,16 +175,21 @@ cat <<- _EOF_ | tee user_credentials.json
 }
 _EOF_
 
-cat <<- _EOF_ | tee user_configuration.json
+cat <<-_EOF_ | tee user_configuration.json
 {
     "app_config": null,
     "archinstall-language": "English",
     "auth_config": {},
-    "bootloader": "Systemd-boot",
+    "audio_config": {
+        "audio": "pipewire"
+    },
+    "bootloader": "Limine",
     "custom_commands": [],
     "disk_config": {
         "btrfs_options": {
-            "snapshot_config": null
+            "snapshot_config": {
+                "type": "Snapper"
+            }
         },
         "config_type": "default_layout",
         "device_modifications": [
@@ -203,7 +213,7 @@ cat <<- _EOF_ | tee user_configuration.json
                                 "value": 512
                             },
                             "unit": "GiB",
-                            "value": 1
+                            "value": 2
                         },
                         "start": {
                             "sector_size": {
@@ -239,7 +249,7 @@ cat <<- _EOF_ | tee user_configuration.json
                         "flags": [],
                         "fs_type": "btrfs",
                         "mount_options": [
-                            "nodatacow"
+                            "compress=zstd"
                         ],
                         "mountpoint": null,
                         "obj_id": "8c2c2b92-1070-455d-b76a-56263bab24aa",
@@ -257,7 +267,7 @@ cat <<- _EOF_ | tee user_configuration.json
                                 "value": 512
                             },
                             "unit": "B",
-                            "value": 1074790400
+                            "value": 2148532224
                         },
                         "status": "create",
                         "type": "primary"
@@ -271,10 +281,11 @@ cat <<- _EOF_ | tee user_configuration.json
             "lvm_volumes": [],
             "partitions": [
                 "8c2c2b92-1070-455d-b76a-56263bab24aa"
-            ]
+            ],
+            "encryption_password": "$password"
         }
     },
-    "hostname": "archlinux",
+    "hostname": "$hostname",
     "kernels": [
         "linux"
     ],
@@ -298,19 +309,9 @@ cat <<- _EOF_ | tee user_configuration.json
     ],
     "parallel_downloads": 0,
     "profile_config": {
-        "gfx_driver": "All open-source",
-        "greeter": "sddm",
-        "profile": {
-            "custom_settings": {
-                "Hyprland": {
-                    "seat_access": "polkit"
-                }
-            },
-            "details": [
-                "Hyprland"
-            ],
-            "main": "Desktop"
-        }
+        "gfx_driver": null,
+        "greeter": null,
+        "profile": {}
     },
     "script": null,
     "services": [],
