@@ -26,40 +26,40 @@ clear_step() {
 
 # STEP 1: NETWORK
 
-if ! (ping -c1 archlinux.org &>/dev/null); then
-  step "Detecting Wi-Fi networks..." slice
+# if ! (ping -c1 archlinux.org &>/dev/null); then
+#   step "Detecting Wi-Fi networks..." slice
 
-  # Get list of interfaces managed by iwd
-  wifi_interfaces=$(iwctl device list | sed -r "s/\x1B\[[0-9;]*[mK]//g" | awk '$NF=="station" {print $1}')
-  wifi_count=$(echo "$wifi_interfaces" | wc -l)
+#   # Get list of interfaces managed by iwd
+#   wifi_interfaces=$(iwctl device list | sed -r "s/\x1B\[[0-9;]*[mK]//g" | awk '$NF=="station" {print $1}')
+#   wifi_count=$(echo "$wifi_interfaces" | wc -l)
 
-  if [[ $wifi_count -eq 0 ]]; then
-    echo "No Wi-Fi interfaces found."
-    abort
-  elif [[ $wifi_count -eq 1 ]]; then
-    wifi_iface="$wifi_interfaces"
-  else
-    wifi_iface=$(echo "$wifi_interfaces" | gum choose --header "Select Wi-Fi interface") || abort
-  fi
+#   if [[ $wifi_count -eq 0 ]]; then
+#     echo "No Wi-Fi interfaces found."
+#     abort
+#   elif [[ $wifi_count -eq 1 ]]; then
+#     wifi_iface="$wifi_interfaces"
+#   else
+#     wifi_iface=$(echo "$wifi_interfaces" | gum choose --header "Select Wi-Fi interface") || abort
+#   fi
 
-  # Scan for networks
-  iwctl station "$wifi_iface" scan
-  sleep 1
+#   # Scan for networks
+#   iwctl station "$wifi_iface" scan
+#   sleep 1
 
-  while true; do
-    networks=$(iwctl station "$wifi_iface" get-networks | sed 's/\x1B\[[0-9;]*[A-Za-z]//g' | awk 'NR>4 && NF {print $1}')
-    ssid=$(echo "$networks" | gum choose --header "Select Wi-Fi network") || abort
+#   while true; do
+#     networks=$(iwctl station "$wifi_iface" get-networks | sed 's/\x1B\[[0-9;]*[A-Za-z]//g' | awk 'NR>4 && NF {print $1}')
+#     ssid=$(echo "$networks" | gum choose --header "Select Wi-Fi network") || abort
 
-    # Connect (iwd prompts for password if needed)
-    if iwctl station "$wifi_iface" connect "$ssid" && ping -c1 archlinux.org &>/dev/null; then
-      gum spin --spinner "globe" --title "Wi-Fi connection established." -- sleep 2
-      break
-    else
-      gum spin --spinner "globe" --title "Bad password (or other connection error)" -- sleep 1
-      clear_step
-    fi
-  done
-fi
+#     # Connect (iwd prompts for password if needed)
+#     if iwctl station "$wifi_iface" connect "$ssid" && ping -c1 archlinux.org &>/dev/null; then
+#       gum spin --spinner "globe" --title "Wi-Fi connection established." -- sleep 2
+#       break
+#     else
+#       gum spin --spinner "globe" --title "Bad password (or other connection error)" -- sleep 1
+#       clear_step
+#     fi
+#   done
+# fi
 
 # STEP 2: USER
 
