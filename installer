@@ -289,7 +289,9 @@ cat <<- _EOF_ | tee user_configuration.json
         "type": "iso"
     },
     "ntp": true,
-    "packages": [],
+    "packages": [
+        "gum"
+    ],
     "parallel_downloads": 0,
     "profile_config": {
         "gfx_driver": "All open-source",
