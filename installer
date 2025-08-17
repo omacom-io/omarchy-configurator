@@ -245,7 +245,7 @@ cat <<- _EOF_ | tee user_configuration.json
                                 "value": 512
                             },
                             "unit": "B",
-                            "value": 8588886016
+                            "value": ${main_partition_size}
                         },
                         "start": {
                             "sector_size": {
@@ -253,7 +253,7 @@ cat <<- _EOF_ | tee user_configuration.json
                                 "value": 512
                             },
                             "unit": "B",
-                            "value": ${main_partition_size}
+                            "value": 1074790400
                         },
                         "status": "create",
                         "type": "primary"
