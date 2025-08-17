@@ -147,6 +147,9 @@ while true; do
   fi
 done
 
+disk_size=$(lsblk -bdno SIZE "$disk")
+main_partition_size=$((disk_size - 2148532224))
+
 clear
 
 cat <<- _EOF_ | tee user_credentials.json
@@ -250,7 +253,7 @@ cat <<- _EOF_ | tee user_configuration.json
                                 "value": 512
                             },
                             "unit": "B",
-                            "value": 1074790400
+                            "value": ${main_partition_size}
                         },
                         "status": "create",
                         "type": "primary"
