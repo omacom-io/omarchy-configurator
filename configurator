@@ -125,24 +125,26 @@ user_form() {
   done
 
   timezone=$(timedatectl list-timezones | gum filter --height 10 --header "Timezone") || abort
-  locale=$(sed '/[.@]/d; s/ .*//' /usr/share/i18n/SUPPORTED | gum choose --height 1 --selected=en_US --header "Locale/keyboard") || abort
-
-  # Set keyboard from locale
-  case "$locale" in
-  en_US) keyboard="us" ;;
-  en_GB) keyboard="gb" ;;
-  da_*) keyboard="dk" ;;
-  pt_BR) keyboard="br" ;;
-  sv_*) keyboard="se" ;;
-  no_*) keyboard="no" ;;
-  *) keyboard=$(printf '%s' "${locale%%_*}" | tr '[:upper:]' '[:lower:]') ;;
+  
+  # Get keyboard layout directly
+  keyboard=$(localectl list-keymaps | gum filter --height 10 --header "Keyboard layout" --value="us") || abort
+  
+  # Set locale based on keyboard for compatibility (system will remain in English)
+  case "$keyboard" in
+  us) locale="en_US" ;;
+  gb) locale="en_GB" ;;
+  dk) locale="da_DK" ;;
+  br) locale="pt_BR" ;;
+  se) locale="sv_SE" ;;
+  no) locale="no_NO" ;;
+  *) locale="en_US" ;;
   esac
 }
 
 user_form
 
 while true; do
-  echo -e "Field,Value\nUser name,$user_name\nPassword,$(printf "%${#password}s" | tr ' ' '*')\nFull name,${full_name:-[Skipped]}\nEmail address,${email_address:-[Skipped]}\nHostname,$hostname\nTimezone,$timezone\nLocale,$locale" | gum table -s "," -p
+  echo -e "Field,Value\nUser name,$user_name\nPassword,$(printf "%${#password}s" | tr ' ' '*')\nFull name,${full_name:-[Skipped]}\nEmail address,${email_address:-[Skipped]}\nHostname,$hostname\nTimezone,$timezone\nKeyboard layout,$keyboard" | gum table -s "," -p
 
   echo
   if gum confirm --negative "No, change it" "Does this look right?"; then
