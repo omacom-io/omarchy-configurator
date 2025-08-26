@@ -233,16 +233,20 @@ boot_partition_size=$((2 * gib))
 main_partition_start=$((boot_partition_size + boot_partition_start))
 main_partition_size=$((disk_size_in_mib - main_partition_start - gpt_backup_reserve))
 
+password_escaped=$(echo -n "$password" | jq -Rsa)
+password_hash_escaped=$(echo -n "$password_hash" | jq -Rsa)
+username_escaped=$(echo -n "$username" | jq -Rsa)
+
 cat <<-_EOF_ | tee user_credentials.json >/dev/null
 {
-    "encryption_password": "$password",
-    "root_enc_password": "$password_hash",
+    "encryption_password": "$password_escaped",
+    "root_enc_password": "$password_hash_escaped",
     "users": [
         {
-            "enc_password": "$password_hash",
+            "enc_password": "$password_hash_escaped",
             "groups": [],
             "sudo": true,
-            "username": "$username"
+            "username": "$username_escaped"
         }
     ]
 }
