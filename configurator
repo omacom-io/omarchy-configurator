@@ -326,7 +326,12 @@ cat <<-_EOF_ | tee user_configuration.json >/dev/null
         }
     },
     "hostname": "$hostname",
-    "kernels": [ "linux" ],
+    "kernels": [
+      {
+        "name": "linux",
+        "unified": true
+      }
+    ],
     "network_config": { "type": "iso" },
     "ntp": true,
     "parallel_downloads": 8,
