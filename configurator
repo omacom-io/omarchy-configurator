@@ -92,9 +92,9 @@ user_form() {
   step "Let's setup your machine..."
 
   while true; do
-    user_name=$(gum input --placeholder "Alphanumeric without spaces (like dhh)" --prompt.foreground="#845DF9" --prompt "User name> ") || abort
+    username=$(gum input --placeholder "Alphanumeric without spaces (like dhh)" --prompt.foreground="#845DF9" --prompt "User name> ") || abort
 
-    if [[ "$user_name" =~ ^[a-z_][a-z0-9_-]*[$]?$ ]]; then
+    if [[ "$username" =~ ^[a-z_][a-z0-9_-]*[$]?$ ]]; then
       break
     else
       notice "User name must be alphanumeric with no spaces" 1
@@ -150,7 +150,7 @@ user_form
 
 while true; do
   echo -e "Field,Value
-User name,$user_name
+User name,$username
 Password,$(printf "%${#password}s" | tr ' ' '*')
 Full name,${full_name:-[Skipped]}
 Email address,${email_address:-[Skipped]}
@@ -242,7 +242,7 @@ cat <<-_EOF_ | tee user_credentials.json >/dev/null
             "enc_password": "$password_hash",
             "groups": [],
             "sudo": true,
-            "username": "$user_name"
+            "username": "$username"
         }
     ]
 }
