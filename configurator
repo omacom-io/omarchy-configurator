@@ -293,7 +293,8 @@ cat <<-_EOF_ | tee user_configuration.json >/dev/null
                             { "mountpoint": "/", "name": "@" },
                             { "mountpoint": "/home", "name": "@home" },
                             { "mountpoint": "/var/log", "name": "@log" },
-                            { "mountpoint": "/var/cache/pacman/pkg", "name": "@pkg" }
+                            { "mountpoint": "/var/cache/pacman/pkg", "name": "@pkg" },
+                            { "mountpoint": "/.snapshots", "name": "@snapshots" }
                         ],
                         "dev_path": null,
                         "flags": [],
