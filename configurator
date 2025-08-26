@@ -239,14 +239,14 @@ username_escaped=$(echo -n "$username" | jq -Rsa)
 
 cat <<-_EOF_ | tee user_credentials.json >/dev/null
 {
-    "encryption_password": "$password_escaped",
-    "root_enc_password": "$password_hash_escaped",
+    "encryption_password": $password_escaped,
+    "root_enc_password": $password_hash_escaped,
     "users": [
         {
-            "enc_password": "$password_hash_escaped",
+            "enc_password": $password_hash_escaped,
             "groups": [],
             "sudo": true,
-            "username": "$username_escaped"
+            "username": $username_escaped
         }
     ]
 }
