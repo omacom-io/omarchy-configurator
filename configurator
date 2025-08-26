@@ -92,12 +92,12 @@ user_form() {
   step "Let's setup your machine..."
 
   while true; do
-    username=$(gum input --placeholder "Alphanumeric without spaces (like dhh)" --prompt.foreground="#845DF9" --prompt "User name> ") || abort
+    username=$(gum input --placeholder "Alphanumeric without spaces (like dhh)" --prompt.foreground="#845DF9" --prompt "Username> ") || abort
 
     if [[ "$username" =~ ^[a-z_][a-z0-9_-]*[$]?$ ]]; then
       break
     else
-      notice "User name must be alphanumeric with no spaces" 1
+      notice "Username must be alphanumeric with no spaces" 1
     fi
   done
 
@@ -150,7 +150,7 @@ user_form
 
 while true; do
   echo -e "Field,Value
-User name,$username
+Username,$username
 Password,$(printf "%${#password}s" | tr ' ' '*')
 Full name,${full_name:-[Skipped]}
 Email address,${email_address:-[Skipped]}
