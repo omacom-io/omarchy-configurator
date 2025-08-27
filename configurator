@@ -13,11 +13,11 @@ OMARCHY_LOGO='                 ▄▄▄
 
 # Install prerequisites
 if ! command -v gum >/dev/null || ! command -v iwctl >/dev/null; then
-  sudo pacman -Sy --noconfirm --needed gum iw
+  sudo pacman -Syu --noconfirm --needed gum iw
 fi
 
 if ! command -v tzupdate >/dev/null; then
-  yay -Sy --noconfirm tzupdate
+  yay -Syu --noconfirm tzupdate
 fi
 
 abort() {
