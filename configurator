@@ -32,6 +32,13 @@ working_network() {
   ping -c5 -W1 1.1.1.1 | grep -q "bytes from"
 }
 
+get_network_security() {
+  local interface="$1"
+  local ssid="$2"
+  
+  iwctl station "$interface" get-networks | sed 's/\x1b\[[0-9;]*m//g' | grep "$ssid" | awk '{print $2}' | tr -d '[:space:]'
+}
+
 clear_logo() {
   clear
   echo -e "\033[32m$OMARCHY_LOGO\033[0m\n"
@@ -87,11 +94,23 @@ if [[ -z $NETWORK_NOT_NEEDED ]]; then
         clear_logo
         ssid="$(echo "$networks" | gum choose --header "Select Wi-Fi network")" || abort
 
-        step "Connecting to $ssid..."
-        if iwctl station "$wifi_interface" connect "$(echo -e "$ssid")" && working_network 5; then
-          break
+        security=$(get_network_security "$wifi_interface" "$ssid")
+        
+        if [[ "$security" == "open" ]]; then
+          step "Connecting to $ssid (open network)..."
+          if iwctl station "$wifi_interface" connect "$(echo -e "$ssid")" && working_network 5; then
+            break
+          else
+            notice "Couldn't connect to network" 1
+          fi
         else
-          notice "Couldn't connect to network (bad password?)" 1
+          step "Connecting to $ssid (secured network)..."
+          wifi_password=$(gum input --placeholder "Password for $ssid" --prompt.foreground="#845DF9" --password --prompt "Wi-Fi Password> ") || abort
+          if iwctl station "$wifi_interface" connect "$(echo -e "$ssid")" --passphrase "$wifi_password" && working_network 5; then
+            break
+          else
+            notice "Couldn't connect to network (bad password?)" 1
+          fi
         fi
       done
     else
