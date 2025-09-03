@@ -204,7 +204,7 @@ disk_form() {
       disk_info=$(get_disk_info "$device")
       disk_options="$disk_options$disk_info"$'\n'
     fi
-  done < <(lsblk -dpno NAME,TYPE | grep -E '/dev/(sd|hd|vd|nvme|mmcblk)' | awk '{print $1}')
+  done < <(lsblk -dpno NAME,TYPE | grep -E '/dev/(sd|hd|vd|nvme|mmcblk|xv)' | awk '{print $1}')
 
   selected_display=$(echo "$disk_options" | gum choose --header "Select install disk") || abort
   disk=$(echo "$selected_display" | awk '{print $1}')
