@@ -1,6 +1,7 @@
 #!/bin/bash
 
-OMARCHY_LOGO='                 ▄▄▄                                                   
+OMARCHY_LOGO='
+                 ▄▄▄                                                             
  ▄█████▄    ▄███████████▄    ▄███████   ▄███████   ▄███████   ▄█   █▄    ▄█   █▄ 
 ███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███
 ███   ███  ███   ███   ███  ███   ███  ███   ███  ███   █▀   ███   ███  ███   ███
@@ -22,6 +23,7 @@ fi
 
 abort() {
   echo "${1:-Aborted installation}"
+  echo -e "\nYou can retry later by running: ./.automated_script.sh"
   exit 1
 }
 
@@ -32,7 +34,7 @@ working_network() {
 
 clear_logo() {
   clear
-  echo -e "$OMARCHY_LOGO\n"
+  echo -e "\033[32m$OMARCHY_LOGO\033[0m\n"
   echo
 }
 
@@ -44,14 +46,14 @@ step() {
 
 notice() {
   clear_logo
-  gum spin --spinner "globe" --title "$1" -- sleep "${2:-2}"
+  gum spin --spinner "pulse" --title "$1" -- sleep "${2:-2}"
 }
 
 # STEP 1: KEYBOARD LAYOUT
 
 keyboard_form() {
   step "Let's setup your machine..."
-  keyboards=$'Albanian|al\nAmharic|et\nArmenian|am\nArabic|ara\nArabic (Egypt)|eg\nArabic (Iraq)|iq\nArabic (Morocco)|ma\nArabic (Syria)|sy\nAzerbaijani|az\nBambara|ml\nBangla|bd\nBelarusian|by\nBelgian|be\nBerber (Algeria, Latin)|dz\nBosnian|ba\nBraille|brai\nBulgarian|bg\nBurmese|mm\nChinese|cn\nCroatian|hr\nCzech|cz\nDanish|dk\nDari|af\nDhivehi|mv\nDutch|nl\nDzongkha|bt\nEnglish (Australia)|au\nEnglish (Cameroon)|cm\nEnglish (Ghana)|gh\nEnglish (New Zealand)|nz\nEnglish (Nigeria)|ng\nEnglish (South Africa)|za\nEnglish (UK)|uk\nEnglish (US)|us\nEsperanto|epo\nEstonian|ee\nFaroese|fo\nFilipino|ph\nFinnish|fi\nFrench|fr\nFrench (Canada)|ca\nFrench (Democratic Republic of the Congo)|cd\nFrench (Togo)|tg\nGeorgian|ge\nGerman|de\nGerman (Austria)|at\nGerman (Switzerland)|ch\nGreek|gr\nHebrew|il\nHungarian|hu\nIcelandic|is\nIndian|in\nIndonesian (Latin)|id\nIrish|ie\nItalian|it\nJapanese|jp\nKazakh|kz\nKhmer (Cambodia)|kh\nKorean|kr\nKyrgyz|kg\nLao|la\nLatvian|lv\nLithuanian|lt\nMacedonian|mk\nMalay (Jawi, Arabic Keyboard)|my\nMaltese|mt\nMoldavian|md\nMongolian|mn\nMontenegrin|me\nNepali|np\nNKo (AZERTY)|gn\nNorwegian|no\nPersian|ir\nPolish|pl\nPortuguese|pt\nPortuguese (Brazil)|br\nRomanian|ro\nRussian|ru\nSerbian|rs\nSinhala (phonetic)|lk\nSlovak|sk\nSlovenian|si\nSpanish|es\nSpanish (Latin American)|latam\nSwahili (Kenya)|ke\nSwahili (Tanzania)|tz\nSwedish|se\nTaiwanese|tw\nTajik|tj\nThai|th\nTswana|bw\nTurkmen|tm\nTurkish|tr\nUkrainian|ua\nUrdu (Pakistan)|pk\nUzbek|uz\nVietnamese|vn\nWolof|sn'
+  keyboards=$'Albanian|al\nAmharic|et\nArmenian|am\nArabic|ara\nArabic (Egypt)|eg\nArabic (Iraq)|iq\nArabic (Morocco)|ma\nArabic (Syria)|sy\nAzerbaijani|az\nBambara|ml\nBangla|bd\nBelarusian|by\nBelgian|be\nBerber (Algeria, Latin)|dz\nBosnian|ba\nBraille|brai\nBulgarian|bg\nBurmese|mm\nChinese|cn\nCroatian|hr\nCzech|cz\nDanish|dk\nDari|af\nDhivehi|mv\nDutch|nl\nDzongkha|bt\nEnglish (Australia)|au\nEnglish (Cameroon)|cm\nEnglish (Ghana)|gh\nEnglish (New Zealand)|nz\nEnglish (Nigeria)|ng\nEnglish (South Africa)|za\nEnglish (UK)|uk\nEnglish (US)|us\nEnglish (US, Dvorak)|us-dvorak\nEsperanto|epo\nEstonian|ee\nFaroese|fo\nFilipino|ph\nFinnish|fi\nFrench|fr\nFrench (Canada)|ca\nFrench (Democratic Republic of the Congo)|cd\nFrench (Togo)|tg\nGeorgian|ge\nGerman|de\nGerman (Austria)|at\nGerman (Switzerland)|ch\nGreek|gr\nHebrew|il\nHungarian|hu\nIcelandic|is\nIndian|in\nIndonesian (Latin)|id\nIrish|ie\nItalian|it\nJapanese|jp\nKazakh|kz\nKhmer (Cambodia)|kh\nKorean|kr\nKyrgyz|kg\nLao|la\nLatvian|lv\nLithuanian|lt\nMacedonian|mk\nMalay (Jawi, Arabic Keyboard)|my\nMaltese|mt\nMoldavian|md\nMongolian|mn\nMontenegrin|me\nNepali|np\nNKo (AZERTY)|gn\nNorwegian|no\nPersian|ir\nPolish|pl\nPortuguese|pt\nPortuguese (Brazil)|br\nRomanian|ro\nRussian|ru\nSerbian|rs\nSinhala (phonetic)|lk\nSlovak|sk\nSlovenian|si\nSpanish|es\nSpanish (Latin American)|latam\nSwahili (Kenya)|ke\nSwahili (Tanzania)|tz\nSwedish|se\nTaiwanese|tw\nTajik|tj\nThai|th\nTswana|bw\nTurkmen|tm\nTurkish|tr\nUkrainian|ua\nUrdu (Pakistan)|pk\nUzbek|uz\nVietnamese|vn\nWolof|sn'
   choice=$(printf '%s\n' "$keyboards" | cut -d'|' -f1 | gum choose --height 10 --selected "English (US)" --header "Select keyboard layout") || abort
   keyboard=$(printf '%s\n' "$keyboards" | awk -F'|' -v c="$choice" '$1==c{print $2; exit}')
   loadkeys "$keyboard" 2>/dev/null
@@ -86,8 +88,7 @@ if [[ -z $NETWORK_NOT_NEEDED ]]; then
         ssid="$(echo "$networks" | gum choose --header "Select Wi-Fi network")" || abort
 
         step "Connecting to $ssid..."
-        wifi_password=$(gum input --password --placeholder "Password for $ssid" --prompt.foreground="#845DF9" --prompt "Password> ") || abort
-        if iwctl station "$wifi_interface" connect "$ssid" --passphrase "$wifi_password" && working_network 5; then
+        if iwctl station "$wifi_interface" connect "$(echo -e "$ssid")" && working_network 5; then
           break
         else
           notice "Couldn't connect to network (bad password?)" 1
@@ -118,8 +119,10 @@ user_form() {
     password=$(gum input --placeholder "Used for user + root + encryption" --prompt.foreground="#845DF9" --password --prompt "Password> ") || abort
     password_confirmation=$(gum input --placeholder "Must match the password you just typed" --prompt.foreground="#845DF9" --password --prompt "Confirm> ") || abort
 
-    if [[ "$password" == "$password_confirmation" ]]; then
+    if [[ -n "$password" && "$password" == "$password_confirmation" ]]; then
       break
+    elif [[ -z "$password" ]]; then
+      notice "Your password can't be blank!" 1
     else
       notice "Passwords didn't match!" 1
     fi
@@ -134,21 +137,21 @@ user_form() {
   while true; do
     hostname=$(gum input --placeholder "Alphanumeric without spaces (or return for 'omarchy')" --prompt.foreground="#845DF9" --prompt "Hostname> ")
 
-    if [[ "$hostname" =~ ^[a-z_][a-z0-9_-]*[$]?$ ]]; then
+    if [[ "$hostname" =~ ^[A-Za-z_][A-Za-z0-9_-]*\$?$ ]]; then
       break
-    else
+    elif [[ -z $hostname ]]; then
       hostname="omarchy"
       break
+    else
+      notice "Hostname must be alphanumeric using dashes or underscores but no spaces" 1
     fi
   done
 
   # Pick timezone
   if command -v tzupdate >/dev/null; then
-    geo_guessed_timezone=$(tzupdate -p)
-    timezone=$(timedatectl list-timezones | gum choose --height 10 --selected "$geo_guessed_timezone" --header "Timezone") || abort
-  else
-    timezone=$(timedatectl list-timezones | gum filter --height 10 --header "Timezone") || abort
+    geo_guessed_timezone=$(tzupdate -p 2>/dev/null)
   fi
+  timezone=$(timedatectl list-timezones | gum filter --height 10 --value "$geo_guessed_timezone" --header "Timezone") || abort
 }
 
 user_form
