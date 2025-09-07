@@ -1,16 +1,9 @@
 #!/bin/bash
-
-OMARCHY_LOGO='
-                 ▄▄▄                                                             
- ▄█████▄    ▄███████████▄    ▄███████   ▄███████   ▄███████   ▄█   █▄    ▄█   █▄ 
-███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███
-███   ███  ███   ███   ███  ███   ███  ███   ███  ███   █▀   ███   ███  ███   ███
-███   ███  ███   ███   ███ ▄███▄▄▄███ ▄███▄▄▄██▀  ███       ▄███▄▄▄███▄ ███▄▄▄███
-███   ███  ███   ███   ███ ▀███▀▀▀███ ▀███▀▀▀▀    ███      ▀▀███▀▀▀███  ▀▀▀▀▀▀███
-███   ███  ███   ███   ███  ███   ███ ██████████  ███   █▄   ███   ███  ▄██   ███
-███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███
- ▀█████▀    ▀█   ███   █▀   ███   █▀   ███   ███  ███████▀   ███   █▀    ▀█████▀ 
-                                       ███   █▀                                  '
+source "$OMARCHY_INSTALL/helpers/size.sh"
+source "$OMARCHY_INSTALL/helpers/ansi-codes.sh"
+source "$OMARCHY_INSTALL/helpers/logo.sh"
+source "$OMARCHY_INSTALL/helpers/gum-styling.sh"
+source "$OMARCHY_INSTALL/preflight/trap-errors.sh"
 
 # Install prerequisites
 if ! command -v gum >/dev/null || ! command -v iwctl >/dev/null; then
@@ -22,8 +15,9 @@ if ! command -v tzupdate >/dev/null; then
 fi
 
 abort() {
-  echo "${1:-Aborted installation}"
-  echo -e "\nYou can retry later by running: ./.automated_script.sh"
+  gum style "${1:-Aborted installation}"
+  echo
+  gum style "You can retry later by running: ./.automated_script.sh"
   exit 1
 }
 
@@ -32,21 +26,18 @@ working_network() {
   ping -c5 -W1 1.1.1.1 | grep -q "bytes from"
 }
 
-clear_logo() {
-  clear
-  echo -e "\033[32m$OMARCHY_LOGO\033[0m\n"
-  echo
-}
-
 step() {
   clear_logo
-  echo "$1"
+  echo
+  gum style "$1"
   echo
 }
 
 notice() {
   clear_logo
+  echo
   gum spin --spinner "pulse" --title "$1" -- sleep "${2:-2}"
+  echo
 }
 
 # STEP 1: KEYBOARD LAYOUT
@@ -56,7 +47,12 @@ keyboard_form() {
   keyboards=$'Albanian|al\nAmharic|et\nArmenian|am\nArabic|ara\nArabic (Egypt)|eg\nArabic (Iraq)|iq\nArabic (Morocco)|ma\nArabic (Syria)|sy\nAzerbaijani|az\nBambara|ml\nBangla|bd\nBelarusian|by\nBelgian|be\nBerber (Algeria, Latin)|dz\nBosnian|ba\nBraille|brai\nBulgarian|bg\nBurmese|mm\nChinese|cn\nCroatian|hr\nCzech|cz\nDanish|dk\nDari|af\nDhivehi|mv\nDutch|nl\nDzongkha|bt\nEnglish (Australia)|au\nEnglish (Cameroon)|cm\nEnglish (Ghana)|gh\nEnglish (New Zealand)|nz\nEnglish (Nigeria)|ng\nEnglish (South Africa)|za\nEnglish (UK)|uk\nEnglish (US)|us\nEnglish (US, Dvorak)|us-dvorak\nEsperanto|epo\nEstonian|ee\nFaroese|fo\nFilipino|ph\nFinnish|fi\nFrench|fr\nFrench (Canada)|ca\nFrench (Democratic Republic of the Congo)|cd\nFrench (Togo)|tg\nGeorgian|ge\nGerman|de\nGerman (Austria)|at\nGerman (Switzerland)|ch\nGreek|gr\nHebrew|il\nHungarian|hu\nIcelandic|is\nIndian|in\nIndonesian (Latin)|id\nIrish|ie\nItalian|it\nJapanese|jp\nKazakh|kz\nKhmer (Cambodia)|kh\nKorean|kr\nKyrgyz|kg\nLao|la\nLatvian|lv\nLithuanian|lt\nMacedonian|mk\nMalay (Jawi, Arabic Keyboard)|my\nMaltese|mt\nMoldavian|md\nMongolian|mn\nMontenegrin|me\nNepali|np\nNKo (AZERTY)|gn\nNorwegian|no\nPersian|ir\nPolish|pl\nPortuguese|pt\nPortuguese (Brazil)|br\nRomanian|ro\nRussian|ru\nSerbian|rs\nSinhala (phonetic)|lk\nSlovak|sk\nSlovenian|si\nSpanish|es\nSpanish (Latin American)|latam\nSwahili (Kenya)|ke\nSwahili (Tanzania)|tz\nSwedish|se\nTaiwanese|tw\nTajik|tj\nThai|th\nTswana|bw\nTurkmen|tm\nTurkish|tr\nUkrainian|ua\nUrdu (Pakistan)|pk\nUzbek|uz\nVietnamese|vn\nWolof|sn'
   choice=$(printf '%s\n' "$keyboards" | cut -d'|' -f1 | gum choose --height 10 --selected "English (US)" --header "Select keyboard layout") || abort
   keyboard=$(printf '%s\n' "$keyboards" | awk -F'|' -v c="$choice" '$1==c{print $2; exit}')
-  loadkeys "$keyboard" 2>/dev/null
+
+  # Only attempt to load keyboard layout if we're on a real console
+  # loadkeys only works on Linux virtual consoles (tty), not in terminal emulators
+  if [[ $(tty 2>/dev/null) == "/dev/tty"* ]]; then
+    loadkeys "$keyboard" 2>/dev/null
+  fi
 }
 
 keyboard_form
@@ -76,6 +72,7 @@ if [[ -z $NETWORK_NOT_NEEDED ]]; then
       wifi_interface="$wifi_interfaces"
     else
       clear_logo
+      echo
       wifi_interface=$(echo "$wifi_interfaces" | gum choose --header "Select Wi-Fi interface") || abort
     fi
 
@@ -85,6 +82,7 @@ if [[ -z $NETWORK_NOT_NEEDED ]]; then
     if [[ -n $networks ]]; then
       while true; do
         clear_logo
+        echo
         ssid="$(echo "$networks" | gum choose --header "Select Wi-Fi network")" || abort
 
         step "Connecting to $ssid..."
@@ -157,6 +155,8 @@ user_form() {
 user_form
 
 while true; do
+  # Add manual padding since gum table -p doesn't respect padding
+  echo
   echo -e "Field,Value
 Username,$username
 Password,$(printf "%${#password}s" | tr ' ' '*')
@@ -165,7 +165,7 @@ Email address,${email_address:-[Skipped]}
 Hostname,$hostname
 Timezone,$timezone
 Keyboard,$keyboard" |
-    gum table -s "," -p
+    gum table -s "," -p | sed "s/^/${PADDING_LEFT_SPACES}/"
 
   echo
   if gum confirm --negative "No, change it" "Does this look right?"; then
@@ -213,7 +213,7 @@ disk_form() {
 disk_form
 
 while true; do
-  echo -e "Everything will be overwritten. There is no recovery possible."
+  gum style "Everything will be overwritten. There is no recovery possible."
 
   echo
   if gum confirm --affirmative "Yes, format disk" --negative "No, change it" "Confirm overwriting ${disk}"; then
