@@ -263,6 +263,7 @@ _EOF_
 
 cat <<-_EOF_ >user_configuration.json
 {
+    "__silent": true,
     "app_config": null,
     "archinstall-language": "English",
     "auth_config": {},
