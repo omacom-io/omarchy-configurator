@@ -337,7 +337,7 @@ cat <<-_EOF_ >user_configuration.json
             "iter_time": 2000,
             "partitions": [ "8c2c2b92-1070-455d-b76a-56263bab24aa" ],
             "encryption_password": $password_escaped,
-            "iter_time": 500
+            "iter_time": 2000
         }
     },
     "hostname": "$hostname",
