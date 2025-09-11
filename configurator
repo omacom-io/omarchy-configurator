@@ -150,8 +150,10 @@ user_form() {
   # Pick timezone
   if command -v tzupdate >/dev/null; then
     geo_guessed_timezone=$(tzupdate -p 2>/dev/null)
+    timezone=$(timedatectl list-timezones | gum choose --height 10 --selected "$geo_guessed_timezone" --header "Timezone") || abort
+  else
+    timezone=$(timedatectl list-timezones | gum filter --height 10 --header "Timezone") || abort
   fi
-  timezone=$(timedatectl list-timezones | gum filter --height 10 --value "$geo_guessed_timezone" --header "Timezone") || abort
 }
 
 user_form
@@ -197,6 +199,19 @@ get_disk_info() {
 disk_form() {
   step "Let's select where to install Omarchy..."
 
+  # Don't offer the install media as an option (Arch ISO mounts it here)
+  local exclude_disk
+  exclude_disk=$(findmnt -no SOURCE /run/archiso/bootmnt 2>/dev/null || true)
+
+  # List all installable disks, excluding the boot device if present
+  local available_disks
+  available_disks=$(
+    lsblk -dpno NAME,TYPE |
+      awk '$2=="disk"{print $1}' |
+      grep -E '/dev/(sd|hd|vd|nvme|mmcblk|xv)' |
+      { if [[ -n "$exclude_disk" ]]; then grep -Fvx "$exclude_disk"; else cat; fi; }
+  )
+
   # Get available disks and format them with info
   local disk_options=""
   while IFS= read -r device; do
@@ -204,7 +219,7 @@ disk_form() {
       disk_info=$(get_disk_info "$device")
       disk_options="$disk_options$disk_info"$'\n'
     fi
-  done < <(lsblk -dpno NAME,TYPE | grep -E '/dev/(sd|hd|vd|nvme|mmcblk|xv)' | awk '{print $1}')
+  done <<<"$available_disks"
 
   selected_display=$(echo "$disk_options" | gum choose --header "Select install disk") || abort
   disk=$(echo "$selected_display" | awk '{print $1}')
@@ -334,6 +349,7 @@ cat <<-_EOF_ >user_configuration.json
         "disk_encryption": {
             "encryption_type": "luks",
             "lvm_volumes": [],
+            "iter_time": 2000,
             "partitions": [ "8c2c2b92-1070-455d-b76a-56263bab24aa" ],
             "encryption_password": $password_escaped
         }
