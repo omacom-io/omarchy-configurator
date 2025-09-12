@@ -1,13 +1,12 @@
 #!/bin/bash
-source "$OMARCHY_INSTALL/helpers/ansi-codes.sh"
 source "$OMARCHY_INSTALL/helpers/logo.sh"
 source "$OMARCHY_INSTALL/helpers/trap-errors.sh"
 source "$OMARCHY_INSTALL/preflight/set-size-vars.sh"
-source "$OMARCHY_INSTALL/preflight/set-gum-styling.sh"
+source "$OMARCHY_INSTALL/preflight/gum.sh"
 
 # Install prerequisites
-if ! command -v gum >/dev/null || ! command -v iwctl >/dev/null; then
-  sudo pacman -Sy --noconfirm --needed gum iw
+if ! command -v iwctl >/dev/null; then
+  sudo pacman -Sy --noconfirm --needed iw
 fi
 
 if ! command -v tzupdate >/dev/null; then
