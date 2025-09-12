@@ -1,9 +1,9 @@
 #!/bin/bash
-source "$OMARCHY_INSTALL/helpers/size.sh"
 source "$OMARCHY_INSTALL/helpers/ansi-codes.sh"
 source "$OMARCHY_INSTALL/helpers/logo.sh"
-source "$OMARCHY_INSTALL/helpers/gum-styling.sh"
-source "$OMARCHY_INSTALL/preflight/trap-errors.sh"
+source "$OMARCHY_INSTALL/helpers/trap-errors.sh"
+source "$OMARCHY_INSTALL/preflight/set-size-vars.sh"
+source "$OMARCHY_INSTALL/preflight/set-gum-styling.sh"
 
 # Install prerequisites
 if ! command -v gum >/dev/null || ! command -v iwctl >/dev/null; then
