@@ -39,6 +39,13 @@ notice() {
   echo
 }
 
+# Detect T2 Mac and set appropriate kernel
+if lspci -nn 2>/dev/null | grep -q "106b:180[12]"; then
+  kernel_choice="linux-t2"
+else
+  kernel_choice="linux"
+fi
+
 # STEP 1: KEYBOARD LAYOUT
 
 keyboard_form() {
@@ -339,7 +346,7 @@ cat <<-_EOF_ >user_configuration.json
         }
     },
     "hostname": "$hostname",
-    "kernels": [ "linux" ],
+    "kernels": [ "$kernel_choice" ],
     "network_config": { "type": "iso" },
     "ntp": true,
     "parallel_downloads": 8,
