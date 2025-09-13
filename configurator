@@ -4,13 +4,8 @@
 source "$OMARCHY_INSTALL/helpers/all.sh"
 
 # Install prerequisites
-if ! command -v iwctl >/dev/null; then
-  sudo pacman -Sy --noconfirm --needed iw
-fi
-
-if ! command -v tzupdate >/dev/null; then
-  yay -Sy --noconfirm tzupdate
-fi
+command -v iwctl >/dev/null || sudo pacman -Sy --noconfirm iw
+command -v tzupdate >/dev/null || sudo pacman -Sy --noconfirm tzupdate
 
 abort() {
   gum style "${1:-Aborted installation}"
