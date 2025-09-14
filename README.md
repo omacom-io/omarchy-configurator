@@ -1,3 +1,3 @@
 # Omarchy Configurator
 
-This has been rolled into the [Omarchy ISO](/omacom-io/omarchy-iso) project.
+This has been rolled into the [Omarchy ISO](https://github.com/omacom-io/omarchy-iso) project.
